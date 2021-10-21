@@ -5,12 +5,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
 
-export default function TasksList() {
+export default function TasksList(props) {
   return (
     <Container fluid className="mainBody">
       <Card>
         <Card.Header as="h5">
-          <i class="bi bi-list-task" /> Task List
+          <i className="bi bi-list-task" /> Task List
         </Card.Header>
         <Card.Body>
           <ListGroup variant="flush">
@@ -18,7 +18,7 @@ export default function TasksList() {
               <Form.Check type="checkbox" inline={true} />
               Cras justo odio
               <Badge variant="primary">
-                <i class="bi bi-clock"></i> Primary
+                <i className="bi bi-clock"></i> Primary
               </Badge>
             </ListGroup.Item>
             <ListGroup.Item>
@@ -37,7 +37,7 @@ export default function TasksList() {
         </Card.Body>
         <Card.Footer className="text-muted">
           <Button variant="primary float-right">
-            <i class="bi bi-plus-lg" />
+            <i className="bi bi-plus-lg" />
             Add Task
           </Button>
         </Card.Footer>

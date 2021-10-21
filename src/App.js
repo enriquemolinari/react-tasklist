@@ -7,6 +7,7 @@ import Menu from "./Menu";
 import Login from "./Login";
 import Welcome from "./Welcome";
 import { Route } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   const apiGwUrl = process.env.REACT_APP_API_GW;
@@ -19,7 +20,10 @@ function App() {
       </Route>
       <Route exact path={"/tasklist"}>
         <Menu />
-        <TasksList apiGwUrl={apiGwUrl} />
+        <PrivateRoute
+          component={<TasksList apiGwUrl={apiGwUrl} />}
+          requiredRoles={"SIMPLE"}
+        />
       </Route>
       <Route exact path={"/login"}>
         <Login apiGwUrl={apiGwUrl} />
