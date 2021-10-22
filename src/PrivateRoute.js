@@ -3,7 +3,7 @@ import { STOREUID, STOREUROLES } from "./Constants";
 
 export default function PrivateRoute({ component, requiredRoles }) {
   let userRoles = sessionStorage.getItem(STOREUROLES);
-  let userId = sessionStorage.getItem(STOREUROLES);
+  let userId = sessionStorage.getItem(STOREUID);
 
   if (userId && requiredRoles.indexOf(userRoles) >= 0) {
     return component;

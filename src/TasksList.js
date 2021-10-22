@@ -4,8 +4,29 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
+import { useEffect, useState } from "react";
+import { STOREUID } from "./Constants";
 
 export default function TasksList(props) {
+  const [tasks, setTasks] = useState({ tasks: [] });
+  let userId = sessionStorage.getItem(STOREUID);
+  let status = {
+    DANGER: "danger",
+    WARNING: "warning",
+    FINE: "primary",
+    FUTURE: "secondary",
+  };
+
+  //if (!userId) return;
+
+  useEffect(() => {
+    fetch(props.apiGwUrl + "/app/tasks?idCreator=" + userId)
+      .then((response) => response.json())
+      .then((json) => {
+        setTasks(json);
+      });
+  }, []);
+
   return (
     <Container fluid className="mainBody">
       <Card>
@@ -13,27 +34,17 @@ export default function TasksList(props) {
           <i className="bi bi-list-task" /> Task List
         </Card.Header>
         <Card.Body>
-          <ListGroup variant="flush">
-            <ListGroup.Item className="border-top">
-              <Form.Check type="checkbox" inline={true} />
-              Cras justo odio
-              <Badge variant="primary">
-                <i className="bi bi-clock"></i> Primary
-              </Badge>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Form.Check type="checkbox" inline={true} />
-              Dapibus ac facilisis in
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Form.Check type="checkbox" inline={true} />
-              Morbi leo risus
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Form.Check type="checkbox" inline={true} />
-              Porta ac consectetur ac
-            </ListGroup.Item>
-          </ListGroup>
+          {tasks.tasks.map((t, index) => (
+            <ListGroup variant="flush">
+              <ListGroup.Item className="border-top">
+                <Form.Check type="checkbox" inline={true} />
+                {t.text}
+                <Badge variant={status[t.status]}>
+                  <i className="bi bi-clock"></i> {t.expirationDate}
+                </Badge>
+              </ListGroup.Item>
+            </ListGroup>
+          ))}
         </Card.Body>
         <Card.Footer className="text-muted">
           <Button variant="primary float-right">
