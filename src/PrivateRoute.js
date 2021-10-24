@@ -1,11 +1,8 @@
 import { Redirect } from "react-router-dom";
-import { STOREUID, STOREUROLES } from "./Constants";
+import User from "./User";
 
 export default function PrivateRoute({ component, requiredRoles }) {
-  let userRoles = sessionStorage.getItem(STOREUROLES);
-  let userId = sessionStorage.getItem(STOREUID);
-
-  if (userId && requiredRoles.indexOf(userRoles) >= 0) {
+  if (User.current().userId() && User.current().hasRole(requiredRoles)) {
     return component;
   } else {
     return <Redirect to="/login" />;

@@ -2,16 +2,15 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { Link, useHistory } from "react-router-dom";
-import { STOREUNAME } from "./Constants";
+import User from "./User";
 
-export default function Menu() {
-  const username = sessionStorage.getItem(STOREUNAME);
+export default function Menu(props) {
+  const username = User.current().userName();
   const history = useHistory();
 
   function handleLogout(e) {
     e.preventDefault();
-    sessionStorage.clear();
-    history.push("/login");
+    User.current(props.apiGwUrl).logout().then(history.push("/login"));
   }
 
   return (

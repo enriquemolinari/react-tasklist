@@ -5,11 +5,14 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
 import { useEffect, useState } from "react";
-import { STOREUID } from "./Constants";
+import User from "./User";
+import { useHistory } from "react-router-dom";
 
 export default function TasksList(props) {
   const [tasks, setTasks] = useState({ tasks: [] });
-  let userId = sessionStorage.getItem(STOREUID);
+  const history = useHistory();
+
+  let userId = User.current().userId();
   let status = {
     DANGER: "danger",
     WARNING: "warning",
@@ -17,11 +20,14 @@ export default function TasksList(props) {
     FUTURE: "secondary",
   };
 
-  //if (!userId) return;
-
   useEffect(() => {
     fetch(props.apiGwUrl + "/app/tasks?idCreator=" + userId)
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 401) {
+          history.push("/login");
+        }
+        return response.json();
+      })
       .then((json) => {
         setTasks(json);
       });
@@ -35,7 +41,7 @@ export default function TasksList(props) {
         </Card.Header>
         <Card.Body>
           {tasks.tasks.map((t, index) => (
-            <ListGroup variant="flush">
+            <ListGroup key={index} variant="flush">
               <ListGroup.Item className="border-top">
                 <Form.Check type="checkbox" inline={true} />
                 {t.text}

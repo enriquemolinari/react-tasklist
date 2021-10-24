@@ -4,7 +4,7 @@ import { Card } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useHistory } from "react-router-dom";
-import { STOREUID, STOREUNAME, STOREUROLES } from "./Constants";
+import User from "./User";
 
 export default function Login(props) {
   const [loginForm, setLoginForm] = useState({
@@ -31,41 +31,19 @@ export default function Login(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    fetch(props.apiGwUrl + "/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        user: loginForm.username,
-        pass: loginForm.password,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        if (json.result === "success") {
-          setErrorResponse({
-            msg: "",
-            error: false,
-          });
 
-          sessionStorage.setItem(STOREUNAME, json.user.name);
-          sessionStorage.setItem(STOREUROLES, json.user.roles);
-          sessionStorage.setItem(STOREUID, json.user.id);
-
-          history.push("/tasklist");
-        } else {
-          setErrorResponse({
-            msg: json.message,
-            error: true,
-          });
-        }
-      })
-      .catch((json) => {
+    new User(props.apiGwUrl)
+      .login(loginForm.username, loginForm.password)
+      .then((v) => {
         setErrorResponse({
-          msg: "Something bad has happened...",
-          error: true,
+          msg: "",
+          error: false,
         });
+
+        history.push("/tasklist");
+      })
+      .catch((v) => {
+        setErrorResponse(v);
       });
   }
 

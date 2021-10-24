@@ -15,11 +15,11 @@ function App() {
   return (
     <>
       <Route exact path={"/"}>
-        <Menu />
+        <Menu apiGwUrl={apiGwUrl} />
         <Welcome />
       </Route>
       <Route exact path={"/tasklist"}>
-        <Menu />
+        <Menu apiGwUrl={apiGwUrl} />
         <PrivateRoute
           component={<TasksList apiGwUrl={apiGwUrl} />}
           requiredRoles={"SIMPLE"}
