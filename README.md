@@ -1,6 +1,8 @@
 # Task List App in React
 
-Task List is a single page application built with React as part of my book [Understanding React](https://leanpub.com/understandingreact). It was built using ...
+Task List is a single page application built with React as part of my book [Understanding React](https://leanpub.com/understandingreact). It was build to demonstrate how to do authentication and authorization in **secure** way.
+
+The book is completely **free** for my students (if you want to read it, just write to me).
 
 # Install and Start
 
