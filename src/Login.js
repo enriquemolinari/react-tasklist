@@ -40,7 +40,7 @@ export default function Login(props) {
           error: false,
         });
 
-        history.push("/tasklist");
+        history.push("/");
       })
       .catch((v) => {
         setErrorResponse(v);

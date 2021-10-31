@@ -22,7 +22,7 @@ function App() {
         <Menu apiGwUrl={apiGwUrl} />
         <PrivateRoute
           component={<TasksList apiGwUrl={apiGwUrl} />}
-          requiredRoles={"SIMPLE"}
+          requiredRoles={["SIMPLE", "ADMIN"]}
         />
       </Route>
       <Route exact path={"/login"}>

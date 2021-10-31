@@ -4,15 +4,20 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
+import Modal from "react-bootstrap/Modal";
+import Alert from "react-bootstrap/Alert";
 import { useEffect, useState } from "react";
-import User from "./User";
 import { useHistory } from "react-router-dom";
+import AddTask from "./AddTask";
 
 export default function TasksList(props) {
   const [tasks, setTasks] = useState({ tasks: [] });
+  const [show, setShow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(0);
   const history = useHistory();
 
-  let userId = User.current().userId();
   let status = {
     DANGER: "danger",
     WARNING: "warning",
@@ -21,20 +26,98 @@ export default function TasksList(props) {
   };
 
   useEffect(() => {
-    fetch(props.apiGwUrl + "/app/tasks?idCreator=" + userId)
+    retrieveTasks();
+  }, []);
+
+  function retrieveTasks() {
+    fetch(props.apiGwUrl + "/app/tasks")
       .then((response) => {
         if (response.status === 401) {
-          history.push("/login");
+          history.push(
+            "/",
+            "Redirected to Home Page, you are not authorized to view the Task List"
+          );
         }
         return response.json();
       })
       .then((json) => {
         setTasks(json);
       });
-  }, []);
+  }
+
+  function handleAddTask() {
+    setShowAddTask(true);
+  }
+
+  function handleErrorAddTasks() {
+    setShowAlert(true);
+  }
+
+  function handleConfirmAddTask() {
+    retrieveTasks();
+  }
+
+  function handleCloseAddTask() {
+    setShowAddTask(false);
+  }
+
+  function handleDeleteOpenConfirm(idTask) {
+    console.log(idTask);
+    setShow(true);
+    setTaskToDelete(idTask);
+  }
+
+  function handleDeleteCloseConfirm() {
+    setShow(false);
+    setTaskToDelete(0);
+  }
+
+  function handleDelete() {
+    setShow(false);
+    fetch(props.apiGwUrl + "/app/tasks?idTask=" + taskToDelete, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((r) => {
+        if (!r.ok) throw Error(r.status);
+        return r.json();
+      })
+      .then(() => retrieveTasks())
+      .catch((e) => setShowAlert(true));
+  }
+
+  function handleDoneOrUnDone(e, done, idTask) {
+    let uri = props.apiGwUrl + "/app/tasks/done?idTask=";
+    if (done) uri = props.apiGwUrl + "/app/tasks/inprogress?idTask=";
+
+    fetch(uri + idTask, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((r) => {
+        if (!r.ok) throw Error(r.status);
+        return r.json();
+      })
+      .then(() => retrieveTasks())
+      .catch((e) => setShowAlert(true));
+  }
 
   return (
     <Container fluid className="mainBody">
+      <Alert
+        show={showAlert}
+        variant="danger"
+        onClose={() => setShowAlert(false)}
+        dismissible
+      >
+        <Alert.Heading>Ops...</Alert.Heading>
+        <p>Shomething when wrong...</p>
+      </Alert>
+
       <Card>
         <Card.Header as="h5">
           <i className="bi bi-list-task" /> Task List
@@ -43,22 +126,59 @@ export default function TasksList(props) {
           {tasks.tasks.map((t, index) => (
             <ListGroup key={index} variant="flush">
               <ListGroup.Item className="border-top">
-                <Form.Check type="checkbox" inline={true} />
-                {t.text}
-                <Badge variant={status[t.status]}>
-                  <i className="bi bi-clock"></i> {t.expirationDate}
-                </Badge>
+                <Form.Check
+                  type="checkbox"
+                  onChange={(e) => handleDoneOrUnDone(e, t.done, t.id)}
+                  checked={t.done}
+                  inline={true}
+                />
+                {t.done ? <span className="done">{t.text}</span> : t.text}
+                {!t.done && (
+                  <Badge variant={status[t.status]}>
+                    <i className="bi bi-clock"></i> {t.expirationDate}
+                  </Badge>
+                )}
+                <a
+                  title="delete task"
+                  role="button"
+                  onClick={(e) => handleDeleteOpenConfirm(t.id)}
+                >
+                  <i className="float-right bi bi-trash"></i>
+                </a>
               </ListGroup.Item>
             </ListGroup>
           ))}
         </Card.Body>
         <Card.Footer className="text-muted">
-          <Button variant="primary float-right">
+          <Button variant="primary float-right" onClick={handleAddTask}>
             <i className="bi bi-plus-lg" />
             Add Task
           </Button>
         </Card.Footer>
       </Card>
+
+      <AddTask
+        apiGwUrl={props.apiGwUrl}
+        show={showAddTask}
+        handleAddTask={handleConfirmAddTask}
+        handleCloseAddTask={handleCloseAddTask}
+        handleErrorAddTasks={handleErrorAddTasks}
+      />
+
+      <Modal show={show} onHide={handleDeleteCloseConfirm}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are sure you want to delete the task ?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleDeleteCloseConfirm}>
+            No
+          </Button>
+          <Button variant="secondary" onClick={handleDelete}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

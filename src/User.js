@@ -17,13 +17,10 @@ export default class User {
 
   hasRole(role) {
     let userRoles = sessionStorage.getItem(STOREUROLES);
-    return role.indexOf(userRoles) >= 0;
+    return role.includes(userRoles);
   }
 
   static current(apiUrl) {
-    if (!sessionStorage.getItem(STOREUID)) {
-      throw Error("There is no current user...");
-    }
     return new User(apiUrl);
   }
 

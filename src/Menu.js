@@ -3,6 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { Link, useHistory } from "react-router-dom";
 import User from "./User";
+import PrivateRoute from "./PrivateRoute";
 
 export default function Menu(props) {
   const username = User.current().userName();
@@ -22,7 +23,10 @@ export default function Menu(props) {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="#">
-            <Link to="/tasklist">Task List</Link>
+            <PrivateRoute
+              component={<Link to="/tasklist">Task List</Link>}
+              requiredRoles={["SIMPLE", "ADMIN"]}
+            ></PrivateRoute>
           </Nav.Link>
         </Nav>
         <Nav>
