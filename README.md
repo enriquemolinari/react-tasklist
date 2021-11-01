@@ -14,3 +14,8 @@ The book is completely **free** for my students (if you want to read it, just wr
 - cd react-tasklist
 - npm install
 - npm start
+
+# Users
+
+- guser/guser123
+- juser/juser123
