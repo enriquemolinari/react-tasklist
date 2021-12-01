@@ -6,16 +6,18 @@ import User from "./User";
 import PrivateRoute from "./PrivateRoute";
 
 export default function Menu(props) {
-  const username = User.current().userName();
+  const userName = User.current().userName();
   const history = useHistory();
 
   function handleLogout(e) {
     e.preventDefault();
-    User.current(props.apiGwUrl).logout().then(history.push("/login"));
+    User.current(props.apiGwUrl)
+      .logout()
+      .then(() => history.push("/login"));
   }
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="sm">
       <Navbar.Brand href="#">
         <Link to="/">Understanding React</Link>
       </Navbar.Brand>
@@ -30,10 +32,10 @@ export default function Menu(props) {
           </Nav.Link>
         </Nav>
         <Nav>
-          {!username && <Link to="/login">Sign in</Link>}
-          {username && (
+          {!userName && <Link to="/login">Sign in</Link>}
+          {userName && (
             <a href="#" onClick={handleLogout}>
-              <i className="bi bi-person-circle"> {username}</i> (Log out)
+              <i className="bi bi-person-circle"> {userName}</i> (Log out)
             </a>
           )}
         </Nav>

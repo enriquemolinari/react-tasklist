@@ -9,6 +9,7 @@ import Alert from "react-bootstrap/Alert";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import AddTask from "./AddTask";
+import User from "./User";
 
 export default function TasksList(props) {
   const [tasks, setTasks] = useState({ tasks: [] });
@@ -33,10 +34,10 @@ export default function TasksList(props) {
     fetch(props.apiGwUrl + "/app/tasks")
       .then((response) => {
         if (response.status === 401) {
-          history.push(
-            "/",
-            "Redirected to Home Page, you are not authorized to view the Task List"
-          );
+          User.current(props.apiGwUrl)
+            .logout()
+            .then(() => history.push("/login"));
+          return { tasks: [] };
         }
         return response.json();
       })
@@ -62,7 +63,6 @@ export default function TasksList(props) {
   }
 
   function handleDeleteOpenConfirm(idTask) {
-    console.log(idTask);
     setShow(true);
     setTaskToDelete(idTask);
   }
@@ -74,8 +74,11 @@ export default function TasksList(props) {
 
   function handleDelete() {
     setShow(false);
-    fetch(props.apiGwUrl + "/app/tasks?idTask=" + taskToDelete, {
+    fetch(props.apiGwUrl + "/app/tasks", {
       method: "DELETE",
+      body: JSON.stringify({
+        idTask: taskToDelete,
+      }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -89,11 +92,14 @@ export default function TasksList(props) {
   }
 
   function handleDoneOrUnDone(e, done, idTask) {
-    let uri = props.apiGwUrl + "/app/tasks/done?idTask=";
-    if (done) uri = props.apiGwUrl + "/app/tasks/inprogress?idTask=";
+    let uri = props.apiGwUrl + "/app/tasks/done";
+    if (done) uri = props.apiGwUrl + "/app/tasks/inprogress";
 
-    fetch(uri + idTask, {
-      method: "POST",
+    fetch(uri, {
+      method: "PUT",
+      body: JSON.stringify({
+        idTask: idTask,
+      }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
