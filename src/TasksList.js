@@ -38,6 +38,11 @@ export default function TasksList(props) {
             .logout()
             .then(() => history.push("/login"));
           return { tasks: [] };
+        } else {
+          if (response.status !== 200) {
+            setShowAlert(true);
+            return { tasks: [] };
+          }
         }
         return response.json();
       })
@@ -118,7 +123,7 @@ export default function TasksList(props) {
         show={showAlert}
         variant="danger"
         onClose={() => setShowAlert(false)}
-        dismissible
+        dismissible="true"
       >
         <Alert.Heading>Ops...</Alert.Heading>
         <p>Shomething when wrong...</p>

@@ -34,7 +34,7 @@ export default function Menu(props) {
         <Nav>
           {!userName && <Link to="/login">Sign in</Link>}
           {userName && (
-            <a href="#" onClick={handleLogout}>
+            <a href="#task" onClick={handleLogout}>
               <i className="bi bi-person-circle"> {userName}</i> (Log out)
             </a>
           )}

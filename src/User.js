@@ -56,12 +56,6 @@ export default class User {
             error: true,
           });
         }
-        if (response.status !== 200) {
-          return Promise.reject({
-            msg: "Something bad has happened...",
-            error: true,
-          });
-        }
         return response.json();
       })
       .then((json) => {
