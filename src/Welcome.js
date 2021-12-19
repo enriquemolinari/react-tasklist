@@ -12,9 +12,9 @@ export default function Welcome() {
         <Card.Body>
           <p>{location.state}</p>
           <p>
-            This application is just to desmostrate how to do auhtentication and
-            authorization in React (or any SPA Application) in a <b>secure</b>{" "}
-            way!
+            Welcome to the Task List Application. This is to demonstrate how to
+            do authentication and authorization in React (or any SPA
+            Application) in a <b>secure</b> way!
           </p>
         </Card.Body>
       </Card>
