@@ -4,9 +4,9 @@
 
 Task List is a single page application built with React as part of my book [Understanding React](https://leanpub.com/understandingreact). It was build to demonstrate how to do authentication and authorization in a **secure** way.
 
-It requires to have it running two services I have wrote: [UserAuth](https://github.com/enriquemolinari/userauth) and [TaskList](https://github.com/enriquemolinari/tasklist). Authentication is implemented using the cookie (HttpOnly, SameSite=strict, Secure) based approach and a JWT token.
+It requires to have it running two services I have wrote: [UserAuth](https://github.com/enriquemolinari/userauth) and [TaskList](https://github.com/enriquemolinari/tasklist). Authentication is implemented using the cookie (HttpOnly, SameSite=strict, Secure) based approach and a [Paseto](https://paseto.io/) token.
 
-The react app, and these two back-end services must be accessed through a reverse proxy to have the SameSite=strict cookie working.
+The react app, and these two back-end services must be accessed through a **reverse proxy** to have the same-origin policy and the SameSite=strict cookie working. Locally, I have used [Kong](https://konghq.com/install/#kong-community), if you want to use the same, below you will find sample configuration.
 
 The book is completely **free** for my students (if you want to read it, just write to me).
 
@@ -21,3 +21,27 @@ The book is completely **free** for my students (if you want to read it, just wr
 
 - guser/guser123
 - juser/juser123
+
+# Kong config
+
+```
+services:
+- name: backend-auth
+  url: http://localhost:1234
+  routes:
+  - name: backend-auth-route
+    paths:
+    - /auth
+- name: backend-tasks
+  url: http://localhost:1235
+  routes:
+  - name: backend-tasks-route
+    paths:
+    - /app
+- name: frontend
+  url: http://localhost:3000
+  routes:
+  - name: frontend-route
+    paths:
+    - /
+```
