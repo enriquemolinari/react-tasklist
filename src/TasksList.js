@@ -7,7 +7,7 @@ import Badge from "react-bootstrap/Badge";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AddTask from "./AddTask";
 import User from "./User";
 
@@ -17,7 +17,7 @@ export default function TasksList(props) {
   const [showAlert, setShowAlert] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(0);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   let status = {
     DANGER: "danger",
@@ -36,7 +36,7 @@ export default function TasksList(props) {
         if (response.status === 401) {
           User.current(props.apiGwUrl)
             .logout()
-            .then(() => history.push("/login"));
+            .then(() => navigate("/login"));
           return { tasks: [] };
         } else {
           if (response.status !== 200) {

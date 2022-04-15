@@ -1,19 +1,19 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import User from "./User";
 import PrivateRoute from "./PrivateRoute";
 
 export default function Menu(props) {
   const userName = User.current().userName();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   function handleLogout(e) {
     e.preventDefault();
     User.current(props.apiGwUrl)
       .logout()
-      .then(() => history.push("/login"));
+      .then(() => navigate("/login"));
   }
 
   return (

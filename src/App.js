@@ -6,29 +6,37 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Menu from "./Menu";
 import Login from "./Login";
 import Welcome from "./Welcome";
-import { Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 
 function App() {
   const apiGwUrl = process.env.REACT_APP_API_GW;
 
   return (
-    <>
-      <Route exact path={"/"}>
-        <Menu apiGwUrl={apiGwUrl} />
-        <Welcome />
-      </Route>
-      <Route exact path={"/tasklist"}>
-        <Menu apiGwUrl={apiGwUrl} />
-        <PrivateRoute
-          component={<TasksList apiGwUrl={apiGwUrl} />}
-          requiredRoles={["SIMPLE", "ADMIN"]}
-        />
-      </Route>
-      <Route exact path={"/login"}>
-        <Login apiGwUrl={apiGwUrl} />
-      </Route>
-    </>
+    <Routes>
+      <Route
+        path={"/"}
+        element={
+          <>
+            <Menu apiGwUrl={apiGwUrl} />
+            <Welcome />
+          </>
+        }
+      />
+      <Route
+        path={"/tasklist"}
+        element={
+          <>
+            <Menu apiGwUrl={apiGwUrl} />
+            <PrivateRoute
+              component={<TasksList apiGwUrl={apiGwUrl} />}
+              requiredRoles={["SIMPLE", "ADMIN"]}
+            />
+          </>
+        }
+      />
+      <Route path={"/login"} element={<Login apiGwUrl={apiGwUrl} />} />
+    </Routes>
   );
 }
 
